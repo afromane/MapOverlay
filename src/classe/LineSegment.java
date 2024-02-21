@@ -1,7 +1,7 @@
 package classe;
 
 //Classe représentant un segment de ligne avec des points d'événement
-public class LineSegment  {
+public class LineSegment implements Comparable<LineSegment>  {
  private EventPoint startPoint, endPoint;
 
  public LineSegment(EventPoint startPoint, EventPoint endPoint) {
@@ -12,19 +12,32 @@ public class LineSegment  {
  public EventPoint getStartPoint() {
      return startPoint;
  }
+ public void setStartPoint(EventPoint startPoint) {
+      this.startPoint =startPoint ;
+ }
+ 
 
  public EventPoint getEndPoint() {
      return endPoint;
  }
- public boolean EstHorizontal() {
+ public void setEndPoint(EventPoint endPoint) {
+     this.endPoint = endPoint ;
+}
+ public boolean isHorizontal() {
 	 return startPoint.getY() == endPoint.getY() ? true :  false ;
  }
- public  int  comparaisonSegment(LineSegment other)
- {
-	 if(this.startPoint.getX() <= other.startPoint.getX())
-		 return -1;
-	 else 
-		 return 1;
+ 
+ @Override
+ public int compareTo(LineSegment other) {
+	  // Comparaison basée sur les coordonnées x du point de d'arrive
+	 
+     return Double.compare(this.endPoint.getX(), other.endPoint.getX());
+ }
+ // Fonction qui vérifie si le segment intersecte la ligne de balayage au point donné
+ public boolean intersectsSweepLine(EventPoint p) {
+    
+     return (startPoint.getY() <= p.getY() && endPoint.getY() >= p.getY()) ||
+            (endPoint.getY() <= p.getY() && startPoint.getY() >= p.getY());
  }
 
 }

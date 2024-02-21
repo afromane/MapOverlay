@@ -1,29 +1,31 @@
 package classe;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 // Classe principale pour représenter un nœud AVL qui stocke des points d'événements
 class EventPointNode {
     EventPoint eventPoint;
-    List<LineSegment> segments;
+    Set<LineSegment> segments;
     EventPointNode left, right;
     int height;
 
     public EventPointNode(EventPoint eventPoint, LineSegment segment) {
         this.eventPoint = eventPoint;
-        this.segments = new ArrayList<>();
+        this.segments = new HashSet<>();
         this.segments.add(segment);
         this.height = 1;
     }
 }
 
 // Classe principale pour la gestion des points d'événements et de la structure AVL associée
-public class EventEnqueue {
+public class EventQueueAVL {
     private EventPointNode root;
 
     // Constructeur de la classe
-    public EventEnqueue() {
+    public EventQueueAVL() {
         this.root = null;
     }
 
@@ -76,7 +78,7 @@ public class EventEnqueue {
         return balance(root);
     }
 
- // Fonction pour trouver le point d'événement le plus petit
+    // Fonction pour trouver le point d'événement le plus petit
     public EventPoint findMin() {
         return findMin(this.root);
     }
@@ -87,7 +89,20 @@ public class EventEnqueue {
         }
         return node.eventPoint;
     }
-
+   
+    // Fonction pour trouver  l'ensemble des segment du point d'événement le plus petit
+    public Set<LineSegment> findMinAllSegment() {
+        return findMinAllSegment(this.root);
+    }
+    // Fonction  auxiliaire pour trouver le point d'événement le plus petit
+    private Set<LineSegment> findMinAllSegment(EventPointNode node) {
+        while (node.left != null) {
+            node = node.left;
+        }
+        return node.segments;
+    }
+    
+    //
     // Fonction pour supprimer un point d'événement et son segment associé de la file d'événements
     public void deleteEvent(EventPoint eventPoint) {
         if (root != null) {
@@ -218,7 +233,7 @@ public class EventEnqueue {
 
         return y;
     }
- // Fonction auxiliaire pour afficher les points d'événements par parcours inordre
+    // Fonction auxiliaire pour afficher les points d'événements par parcours inordre
     public void inOrderTraversal() {
     	inOrderTraversal(this.root);
     }
@@ -235,5 +250,11 @@ public class EventEnqueue {
             System.out.println();*/
             inOrderTraversal(node.right);
         }
+    }
+    
+    // FOnction permetant de verifier si l'arbre est vide
+    
+    public boolean isEmpty(){
+    	return this.root == null ? true : false;
     }
 }
