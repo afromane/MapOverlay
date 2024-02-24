@@ -44,22 +44,32 @@ public class Main {
 		EventPoint pvt = findIntersect.eventqueue.findMin();
 		System.out.printf(" point" + pvt.toString());*/
 		
-		LineSegment segment1 =  new LineSegment(new EventPoint(2,4),new EventPoint(3.5,6.0));
+		/*LineSegment segment1 =  new LineSegment(new EventPoint(2,4),new EventPoint(3.5,6.0));
 		LineSegment segment2 =  new LineSegment(new EventPoint(6.5,4.0), new EventPoint(5.0,7));
 		LineSegment segment3 =  new LineSegment(new EventPoint(4.5,4),new EventPoint(3,1.5));
-		LineSegment segment4 =  new LineSegment(new EventPoint(3,3),new EventPoint(2,1));
+		LineSegment segment4 =  new LineSegment(new EventPoint(3,3),new EventPoint(2,1));*/
+		
+		LineSegment segment1 =  new LineSegment(new EventPoint(4.5,9),new EventPoint(3,6.5));
+		LineSegment segment2 =  new LineSegment(new EventPoint(5.5,9.0), new EventPoint(4.5,6.5));
+		LineSegment segment3 =  new LineSegment(new EventPoint(6.5,9),new EventPoint(8,6));
+		LineSegment segment4 =  new LineSegment(new EventPoint(6,6),new EventPoint(4,3.5));
+		LineSegment segment5 =  new LineSegment(new EventPoint(2.5,3.5),new EventPoint(4.5,9));
+		LineSegment segment6 =  new LineSegment(new EventPoint(4.5,9),new EventPoint(7.5,9));
+		
 		Set<LineSegment> segments = new HashSet<LineSegment>();
 		segments.add(segment1);
 		segments.add(segment2);
 		segments.add(segment3);
 		segments.add(segment4);
+		segments.add(segment5);
+		segments.add(segment6);
 		
 		FindIntersectionsAlgorithm  findIntersect = new FindIntersectionsAlgorithm();
 		
 		findIntersect.findIntersections(segments); 
+		
 	}
 	public static Set<LineSegment> loadSegments(String filePath) {
-		// Déclaration d'un ensemble de LineSegment
 		Set<LineSegment> segments = new HashSet<>();
         try (BufferedReader reader = new BufferedReader(new FileReader(filePath))) {
             String line;

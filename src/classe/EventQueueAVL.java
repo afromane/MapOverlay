@@ -257,4 +257,29 @@ public class EventQueueAVL {
     public boolean isEmpty(){
     	return this.root == null ? true : false;
     }
+
+    public Set<LineSegment> findSegmentsAtEvent(EventPoint eventPoint) {
+        return findSegmentsAtEvent(root, eventPoint);
+    }
+
+    private Set<LineSegment> findSegmentsAtEvent(EventPointNode node, EventPoint eventPoint) {
+        Set<LineSegment> segments = new HashSet<>();
+
+        while (node != null) {
+            if (eventPoint.compareTo(node.eventPoint) < 0) {
+                // Le point d'événement recherché est à gauche
+                segments.addAll(node.segments);
+                node = node.left;
+            } else if (eventPoint.compareTo(node.eventPoint) > 0) {
+                // Le point d'événement recherché est à droite
+                node = node.right;
+            } else {
+                // Point d'événement trouvé
+                segments.addAll(node.segments);
+                break;
+            }
+        }
+
+        return segments;
+    }
 }
