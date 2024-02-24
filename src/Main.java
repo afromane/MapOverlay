@@ -54,7 +54,7 @@ public class Main {
 		LineSegment segment3 =  new LineSegment(new EventPoint(6.5,9),new EventPoint(8,6));
 		LineSegment segment4 =  new LineSegment(new EventPoint(6,6),new EventPoint(4,3.5));
 		LineSegment segment5 =  new LineSegment(new EventPoint(2.5,3.5),new EventPoint(4.5,9));
-		LineSegment segment6 =  new LineSegment(new EventPoint(4.5,9),new EventPoint(7.5,9));
+		LineSegment segment6 =  new LineSegment(new EventPoint(4.5,10),new EventPoint(5.5,9));
 		
 		Set<LineSegment> segments = new HashSet<LineSegment>();
 		segments.add(segment1);
@@ -67,6 +67,7 @@ public class Main {
 		FindIntersectionsAlgorithm  findIntersect = new FindIntersectionsAlgorithm();
 		
 		findIntersect.findIntersections(segments); 
+		findIntersect.reportIntersection.inOrderTraversal();
 		
 	}
 	public static Set<LineSegment> loadSegments(String filePath) {

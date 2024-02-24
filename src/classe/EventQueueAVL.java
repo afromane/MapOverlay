@@ -243,11 +243,11 @@ public class EventQueueAVL {
         if (node != null) {
             inOrderTraversal(node.left);
             System.out.println("Point d'événement : " + node.eventPoint.getX() + ", " + node.eventPoint.getY());
-           /* System.out.println("Segments associés :");
+           System.out.println("Segments associés :");
             for (LineSegment segment : node.segments) {
                 System.out.println(segment.getStartPoint().toString() + " - " + segment.getEndPoint().toString());
             }
-            System.out.println();*/
+            System.out.println();
             inOrderTraversal(node.right);
         }
     }

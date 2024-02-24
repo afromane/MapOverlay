@@ -70,10 +70,15 @@ public class FindIntersectionsAlgorithm {
         Set<LineSegment> allSegments = new HashSet<>();
         allSegments.addAll(lowerSegments);
         allSegments.addAll(upperSegments);
-        allSegments.addAll(containingSegments);
+        //allSegments.addAll(containingSegments);
+      //System.out.println("Event point" + p.toString() + " segments : "+allSegments.size());
+        
         // Étape 4: Rapporter l'intersection avec L(p), U(p) et C(p)
         if (allSegments.size() > 1) {
-        	//System.out.println("report : "+allSegments.size());
+        	System.out.println("report : "+allSegments.size());
+        	 /*for (LineSegment segment : allSegments) {
+                 System.out.println(segment.getStartPoint().toString() + " - " + segment.getEndPoint().toString());
+             }*/
         	 for(LineSegment segment : allSegments)
              	this.reportIntersection.insertEvent(p, segment);
         }
@@ -128,6 +133,9 @@ public class FindIntersectionsAlgorithm {
 	private  Set<LineSegment> getUpperSegments( EventPoint p) {
 		Set<LineSegment> upperSegments = new HashSet<>();
 		for (LineSegment segment : this.segments) {
+			/*if (segment.getEndPoint().compareTo(p) == 0 || segment.getStartPoint().compareTo(p) == 0) {
+	            upperSegments.add(segment);
+	        }*/
 	         // Vérifie si le segment est horizontal
 	    	if(segment.isHorizontal()) {
 	    		if (segment.getStartPoint().compareTo(p) == 0) {
@@ -135,7 +143,7 @@ public class FindIntersectionsAlgorithm {
 		        }
 	    	}
 	    	else {
-	    		if (segment.getEndPoint().compareTo(p) == 0) {
+	    		if (segment.getEndPoint().compareTo(p) == 0 || segment.getStartPoint().compareTo(p) == 0) {
 		            upperSegments.add(segment);
 		        }
 	    	}

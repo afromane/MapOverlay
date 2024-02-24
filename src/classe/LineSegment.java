@@ -30,15 +30,12 @@ public class LineSegment   {
  
 //Method to compare line segments
  public int compare(LineSegment other) {
-     // Your comparison logic here
-     // You might want to compare based on the start and end points of the line segments
-     // Adjust this according to your requirements
      if (this.getStartPoint().getY() > other.getStartPoint().getY() || (this.getStartPoint().getY() == other.getStartPoint().getY() && this.getStartPoint().getX() < other.getStartPoint().getX())) {
          return -1; // this ≺ other
      } else if (this.getStartPoint().getY() == other.getStartPoint().getY() && this.getStartPoint().getX() == other.getStartPoint().getX() && this.getEndPoint().getY() == other.getEndPoint().getY() && this.getEndPoint().getX() == other.getEndPoint().getX()) {
-         return 0; // this and other are equal
+         return 0; 
      } else {
-         return 1; // this ≻ other
+         return 1; 
      }
  }
  // Fonction qui vérifie si le segment intersecte la ligne de balayage au point donné
