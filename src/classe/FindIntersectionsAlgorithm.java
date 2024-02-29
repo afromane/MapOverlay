@@ -70,7 +70,7 @@ public class FindIntersectionsAlgorithm {
         Set<LineSegment> allSegments = new HashSet<>();
         allSegments.addAll(lowerSegments);
         allSegments.addAll(upperSegments);
-        //allSegments.addAll(containingSegments);
+       // allSegments.addAll(containingSegments);
       //System.out.println("Event point" + p.toString() + " segments : "+allSegments.size());
         
         // Étape 4: Rapporter l'intersection avec L(p), U(p) et C(p)
@@ -110,6 +110,7 @@ public class FindIntersectionsAlgorithm {
             LineSegment sl = null;
             LineSegment sr = null;
             this.statusStructure.findNeighbors(p, sl, sr);
+            findNewEvent(sl, sr, p);
         } 
        
         else {

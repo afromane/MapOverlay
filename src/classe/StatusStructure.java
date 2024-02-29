@@ -34,25 +34,36 @@ public class StatusStructure {
     }
 
     private StatusNode rightRotate(StatusNode y) {
-        StatusNode x = y.left;
-        StatusNode T2 = x.right;
-
-        x.right = y;
-        y.left = T2;
-
-        updateHeight(y);
-        updateHeight(x);
-
-        return x;
-    }
+	    if (y == null) {
+	        return null; 
+	    }
+	    StatusNode x = y.left;
+	    if (x == null) {
+	        return y;
+	    }
+	
+	    StatusNode T2 = x.right;
+	
+	    x.right = y;
+	    y.left = T2;
+	
+	    updateHeight(y);
+	    updateHeight(x);
+	
+	    return x;
+	}
 
     private StatusNode leftRotate(StatusNode x) {
+        if (x == null) {
+            return null; 
+        }
         StatusNode y = x.right;
+        if (y == null) {
+            return x;
+        }
         StatusNode T2 = y.left;
-
         y.left = x;
         x.right = T2;
-
         updateHeight(x);
         updateHeight(y);
 
