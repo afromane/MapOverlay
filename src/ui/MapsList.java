@@ -57,11 +57,14 @@ public class MapsList extends JPanel {
 
         // Footer components
         JButton visualizerButton = new JButton("Visualizer");
-        JButton mapOverlayButton = new JButton("Map Overlay");
+        JButton mapOverlayButton = new JButton("Editer");
+
+        JButton editerButton = new JButton("Map Overlay");
 
         // Create a JPanel to hold the footer components
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         footerPanel.add(visualizerButton);
+        footerPanel.add(editerButton);
         footerPanel.add(mapOverlayButton);
 
         // Create a JPanel to act as a container for the footer
