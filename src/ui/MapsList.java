@@ -2,7 +2,10 @@ package ui;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 public class MapsList extends JPanel {
@@ -10,13 +13,16 @@ public class MapsList extends JPanel {
     private static final long serialVersionUID = 1L;
     private static final String PROJECT_DIRECTORY = System.getProperty("user.dir");
     DefaultListModel<FileListItem> listModel = new DefaultListModel<>();
+    
+    
     JList<FileListItem> list;
-
+    public List<String> selectedMaps ;
     /**
      * Create the panel.
      */
     public MapsList() {
         setLayout(new BorderLayout());
+        this.selectedMaps = new ArrayList<>();
 
         list = new JList<>(listModel);
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
@@ -27,6 +33,18 @@ public class MapsList extends JPanel {
         // Add a margin to the JList
         int margin = 30;
         list.setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
+
+        // Use a DefaultListSelectionModel that supports checking
+        list.setSelectionModel(new DefaultListSelectionModel() {
+            @Override
+            public void setSelectionInterval(int index0, int index1) {
+                if (super.isSelectedIndex(index0)) {
+                    super.removeSelectionInterval(index0, index1);
+                } else {
+                    super.addSelectionInterval(index0, index1);
+                }
+            }
+        });
 
         // Create a JScrollPane to provide scrolling if needed
         JScrollPane scrollPane = new JScrollPane(list);
@@ -46,10 +64,9 @@ public class MapsList extends JPanel {
                 // Handle the selection event here
                 List<FileListItem> selectedFiles = list.getSelectedValuesList();
                 if (!selectedFiles.isEmpty()) {
-                    // Do something with the selected files
-                    System.out.println("Selected Files:");
+                    this.selectedMaps.clear();
                     for (FileListItem selectedFile : selectedFiles) {
-                        System.out.println(selectedFile.getFileName());
+                    	this.selectedMaps.add(PROJECT_DIRECTORY+"/maps/"+selectedFile.getFileName());
                     }
                 }
             }
@@ -57,9 +74,20 @@ public class MapsList extends JPanel {
 
         // Footer components
         JButton visualizerButton = new JButton("Visualizer");
-        JButton mapOverlayButton = new JButton("Editer");
-
-        JButton editerButton = new JButton("Map Overlay");
+        
+        visualizerButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                if (selectedMaps != null && !selectedMaps.isEmpty()) {
+                    System.out.println("Selected Maps:");
+                    showBlockingDialog(selectedMaps);
+                } else {
+                    System.out.println("Aucune carte sélectionnée.");
+                }
+            }
+        });
+        JButton editerButton = new JButton("Editer");
+        JButton mapOverlayButton = new JButton("Map Overlay");
 
         // Create a JPanel to hold the footer components
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -115,8 +143,8 @@ public class MapsList extends JPanel {
             return fileName;
         }
     }
-
     private static class FileListRenderer extends JPanel implements ListCellRenderer<FileListItem> {
+        private final JCheckBox checkBox;
         private final JLabel iconLabel;
         private final JLabel nameLabel;
 
@@ -124,9 +152,12 @@ public class MapsList extends JPanel {
 
         public FileListRenderer() {
             setLayout(new BorderLayout());
+            checkBox = new JCheckBox();
+            checkBox.setOpaque(false); // Rend la case à cocher transparente
             iconLabel = new JLabel();
             nameLabel = new JLabel();
             nameLabel.setHorizontalAlignment(JLabel.CENTER);
+            add(checkBox, BorderLayout.WEST);
             add(iconLabel, BorderLayout.CENTER);
             add(nameLabel, BorderLayout.SOUTH);
         }
@@ -134,6 +165,7 @@ public class MapsList extends JPanel {
         @Override
         public Component getListCellRendererComponent(JList<? extends FileListItem> list, FileListItem value,
                                                       int index, boolean isSelected, boolean cellHasFocus) {
+            checkBox.setSelected(list.isSelectedIndex(index));
             iconLabel.setIcon(value.getIcon());
             nameLabel.setText(value.getFileName());
             nameLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
@@ -146,5 +178,9 @@ public class MapsList extends JPanel {
         }
     }
 
-   
-}
+    private void showBlockingDialog(List<String> selectedMaps) {
+        DisplayMap blockingDialog = new DisplayMap(selectedMaps);
+        blockingDialog.setLocationRelativeTo(this);
+        blockingDialog.setVisible(true);
+    }
+ }
