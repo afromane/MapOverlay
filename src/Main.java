@@ -33,6 +33,10 @@ public class Main {
 			}
 		});
 		
+		//LineSegment s1 = new LineSegment(new EventPoint(2,2),new EventPoint(4,6));
+	//	LineSegment s2 = new LineSegment(new EventPoint(2,1),new EventPoint(4,1));
+		//LineSegment s3 = new LineSegment(new EventPoint(2,2),new EventPoint(4,8));
+		
 		/*Set<LineSegment> segments =  loadSegments("C:\\Users\\Manel Issa\\Desktop\\MapOverlay\\cartes\\fichier2.txt");
 		
 		FindIntersectionsAlgorithm  findIntersect = new FindIntersectionsAlgorithm();

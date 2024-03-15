@@ -18,6 +18,7 @@ import java.nio.file.StandardCopyOption;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 
 public class LeftPanel extends JPanel {
 
@@ -49,6 +50,15 @@ public class LeftPanel extends JPanel {
 		JButton btnSaisie = new JButton("Saisie  nouvelle carte");
 		btnSaisie.setFont(new Font("Viner Hand ITC", Font.PLAIN, 20));
 		btnSaisie.setBounds(10, 261, 258, 41);
+		
+		btnSaisie.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+            	SaveSegment blockingDialog = new SaveSegment();
+                blockingDialog.setLocationRelativeTo(null);
+                blockingDialog.setVisible(true);
+            }
+        });
 		add(btnSaisie);
 		
 		JButton btnAfficherUneCarte = new JButton("Afficher une carte");
@@ -60,16 +70,19 @@ public class LeftPanel extends JPanel {
 		btnAfficherUneCarte.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+            	MapsList blockingDialog  =new MapsList();
+                blockingDialog.setLocationRelativeTo(null);
+                blockingDialog.setVisible(true);
                // showFileChooser();
             	
-            	 SwingUtilities.invokeLater(new Runnable() {
+            	/* SwingUtilities.invokeLater(new Runnable() {
                      @Override
                      public void run() {
                     	 JPanel newMapPanel = new MapsList();
                          
                      	mainScreen.replaceRightPanel(newMapPanel, "MapsList");                    
                      }
-                 });
+                 });*/
             }
         });
 		add(btnAfficherUneCarte);
@@ -106,9 +119,11 @@ public class LeftPanel extends JPanel {
             Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
 
             System.out.println("File copied successfully to: " + destinationPath);
+            JOptionPane.showMessageDialog(this, "Carte chargé"+ fileToCopy.getName() +" avec succès dans ", "Succès", JOptionPane.INFORMATION_MESSAGE);
 
         } catch (IOException e) {
             e.printStackTrace();
+            JOptionPane.showMessageDialog(this, "Erreur lors du chargement de la carte.", "Erreur", JOptionPane.ERROR_MESSAGE);
             System.out.println("Error copying file: " + e.getMessage());
         }
     }

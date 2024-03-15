@@ -1,5 +1,6 @@
-package ui;
 
+
+package ui;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -7,33 +8,61 @@ import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-public class MapsList extends JPanel {
+import java.awt.Desktop;
+import java.io.File;
+import java.io.IOException;
+public class MapsList extends JDialog {
 
     private static final long serialVersionUID = 1L;
     private static final String PROJECT_DIRECTORY = System.getProperty("user.dir");
-    DefaultListModel<FileListItem> listModel = new DefaultListModel<>();
-    
-    
-    JList<FileListItem> list;
-    public List<String> selectedMaps ;
-    /**
-     * Create the panel.
-     */
-    public MapsList() {
-        setLayout(new BorderLayout());
-        this.selectedMaps = new ArrayList<>();
+    private static final int MARGIN = 10;
 
+    private DefaultListModel<FileListItem> listModel = new DefaultListModel<>();
+    private JList<FileListItem> list;
+    private List<String> selectedMaps;
+
+    public MapsList() {
+        setModal(true);
+        setTitle("Liste des cartes");
+        setLayout(new BorderLayout());
+        selectedMaps = new ArrayList<>();
+
+        initializeList();
+
+        add(createScrollPane(), BorderLayout.CENTER);
+        add(createFooterPanel(), BorderLayout.PAGE_END);
+
+        setPreferredSize(new Dimension(700, 500));
+        pack();
+        setLocationRelativeTo(null);
+    }
+
+    private void initializeList() {
+        File directory = new File(PROJECT_DIRECTORY + File.separator + "maps");
+
+        if (directory.isDirectory()) {
+            File[] files = directory.listFiles();
+
+            if (files != null) {
+                for (File file : files) {
+                    if (!file.isDirectory()) {
+                        ImageIcon icon = new ImageIcon(new ImageIcon(PROJECT_DIRECTORY + File.separator + "src/images/icon.png")
+                                .getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
+                        listModel.addElement(new FileListItem(file.getName(), icon));
+                    }
+                }
+            }
+        }
+    }
+
+    private JScrollPane createScrollPane() {
         list = new JList<>(listModel);
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
         list.setCellRenderer(new FileListRenderer());
         list.setFont(new Font("Viner Hand ITC", Font.PLAIN, 17));
-        // Allow multiple selections
         list.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-        // Add a margin to the JList
-        int margin = 30;
-        list.setBorder(BorderFactory.createEmptyBorder(margin, margin, margin, margin));
-
+        
+        list.setBorder(BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN));
         // Use a DefaultListSelectionModel that supports checking
         list.setSelectionModel(new DefaultListSelectionModel() {
             @Override
@@ -46,79 +75,74 @@ public class MapsList extends JPanel {
             }
         });
 
-        // Create a JScrollPane to provide scrolling if needed
-        JScrollPane scrollPane = new JScrollPane(list);
-        add(scrollPane, BorderLayout.CENTER);
-
-        JLabel lblNewLabel = new JLabel("LISTE DE CARTE");
-        lblNewLabel.setFont(new Font("Times New Roman", Font.BOLD, 20));
-        JPanel labelPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-        labelPanel.setBackground(new Color(255, 255, 255));
-        labelPanel.add(lblNewLabel);
-        labelPanel.setOpaque(false);
-        scrollPane.setColumnHeaderView(labelPanel);
-
-        // Add a ListSelectionListener to handle selection events
         list.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                // Handle the selection event here
                 List<FileListItem> selectedFiles = list.getSelectedValuesList();
-                if (!selectedFiles.isEmpty()) {
-                    this.selectedMaps.clear();
-                    for (FileListItem selectedFile : selectedFiles) {
-                    	this.selectedMaps.add(PROJECT_DIRECTORY+"/maps/"+selectedFile.getFileName());
+                selectedMaps.clear();
+                for (FileListItem selectedFile : selectedFiles) {
+                    selectedMaps.add(PROJECT_DIRECTORY + File.separator + "maps" + File.separator + selectedFile.getFileName());
+                }
+            }
+        });
+
+        return new JScrollPane(list);
+    }
+
+    private JPanel createFooterPanel() {
+        JButton visualizerButton = createButton("Visualizer", e -> {
+            if (!selectedMaps.isEmpty()) {
+                System.out.println("Selected Maps:");
+                showBlockingDialog(selectedMaps);
+            } else {
+                System.out.println("Aucune carte sélectionnée.");
+            }
+        });
+
+        JButton editerButton = createButton("Editer", e -> {
+        	
+        	for(String file : this.selectedMaps) {
+        		File fichier = new File(file);
+                
+                if (fichier.exists() && Desktop.isDesktopSupported()) {
+                    try {
+                        Desktop.getDesktop().edit(fichier);
+                    } catch (IOException ex) {
+                        ex.printStackTrace();
                     }
-                }
-            }
-        });
-
-        // Footer components
-        JButton visualizerButton = new JButton("Visualizer");
-        
-        visualizerButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (selectedMaps != null && !selectedMaps.isEmpty()) {
-                    System.out.println("Selected Maps:");
-                    showBlockingDialog(selectedMaps);
                 } else {
-                    System.out.println("Aucune carte sélectionnée.");
-                }
-            }
-        });
-        JButton editerButton = new JButton("Editer");
-        JButton mapOverlayButton = new JButton("Map Overlay");
 
-        // Create a JPanel to hold the footer components
+                    JOptionPane.showMessageDialog(this, "Le fichier n'existe pas ou Desktop n'est pas pris en charge.", "Erreur", JOptionPane.ERROR_MESSAGE);
+                    System.out.println("Le fichier n'existe pas ou Desktop n'est pas pris en charge.");
+                }
+        	}
+            
+        });
+
+        JButton mapOverlayButton = createButton("Map Overlay", e -> {
+            // Handle Map Overlay button action
+        });
+
         JPanel footerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
         footerPanel.add(visualizerButton);
         footerPanel.add(editerButton);
         footerPanel.add(mapOverlayButton);
 
-        // Create a JPanel to act as a container for the footer
         JPanel footerContainer = new JPanel(new BorderLayout());
         footerContainer.add(footerPanel, BorderLayout.SOUTH);
 
-        // Add the footer container to the BorderLayout.PAGE_END of the JScrollPane
-        add(footerContainer, BorderLayout.PAGE_END);
+        return footerContainer;
+    }
 
-        File directory = new File(PROJECT_DIRECTORY + "/maps/");
+    private JButton createButton(String text, ActionListener actionListener) {
+        JButton button = new JButton(text);
+        button.addActionListener(actionListener);
+        return button;
+    }
 
-        if (directory.isDirectory()) {
-            // Get the list of files in the directory
-            File[] files = directory.listFiles();
-
-            // Add file names and icons to the DefaultListModel
-            if (files != null) {
-                for (File file : files) {
-                    if (!file.isDirectory()) {
-                        // Resize the icon and add it to the list model
-                        ImageIcon icon = new ImageIcon(new ImageIcon(PROJECT_DIRECTORY + "/src/images/icon.png").getImage().getScaledInstance(50, 50, Image.SCALE_SMOOTH));
-                        listModel.addElement(new FileListItem(file.getName(), icon));
-                    }
-                }
-            }
-        }
+    private void showBlockingDialog(List<String> selectedMaps) {
+        DisplayMap blockingDialog = new DisplayMap(selectedMaps);
+        blockingDialog.setLocationRelativeTo(this);
+        blockingDialog.setVisible(true);
     }
 
     private static class FileListItem {
@@ -143,17 +167,16 @@ public class MapsList extends JPanel {
             return fileName;
         }
     }
+
     private static class FileListRenderer extends JPanel implements ListCellRenderer<FileListItem> {
         private final JCheckBox checkBox;
         private final JLabel iconLabel;
         private final JLabel nameLabel;
 
-        private static final int MARGIN = 10;
-
         public FileListRenderer() {
             setLayout(new BorderLayout());
             checkBox = new JCheckBox();
-            checkBox.setOpaque(false); // Rend la case à cocher transparente
+            checkBox.setOpaque(false);
             iconLabel = new JLabel();
             nameLabel = new JLabel();
             nameLabel.setHorizontalAlignment(JLabel.CENTER);
@@ -171,16 +194,11 @@ public class MapsList extends JPanel {
             nameLabel.setForeground(isSelected ? list.getSelectionForeground() : list.getForeground());
             setBackground(isSelected ? list.getSelectionBackground() : list.getBackground());
 
-            // Add margin around each item
             setBorder(BorderFactory.createEmptyBorder(MARGIN, MARGIN, MARGIN, MARGIN));
 
             return this;
         }
     }
 
-    private void showBlockingDialog(List<String> selectedMaps) {
-        DisplayMap blockingDialog = new DisplayMap(selectedMaps);
-        blockingDialog.setLocationRelativeTo(this);
-        blockingDialog.setVisible(true);
-    }
- }
+   
+}
